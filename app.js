@@ -18,6 +18,12 @@ const bcrypt = require("bcryptjs")
 app.use(express.urlencoded({extended: 'false'}))
 app.use(express.json())
 
+// Default DB Route
+app.get('/', function(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  return res.send({error: true, message: 'Kaziwai'})
+});
+
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -25,10 +31,40 @@ var con = mysql.createConnection({
   database: "kvideodb"
 });
 
-// START customer registration
-app.get("/", (req, res) => {
-  res.render("index")
-  })
+con.connect();
+/*
+// Connect to DB and select 5 customers
+// SELECT 5 records
+con.connect(function(err) {
+  if (err) throw err;
+  var sql = "SELECT * FROM customers LIMIT 5";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
+  console.log("MySQL connected!")
+});
+*/
+
+// Retrive ALL customers
+app.get("/customers", function (req,res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  con.query('SELECT * FROM customers', function(error, results, fields){
+    if (error) throw error;
+    
+    return res.send({error: false, data: results, message: 'All customers!'});    
+  });
+});
+
+// INSERT record into video
+app.get("/video", function (req,res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  con.query('SELECT * FROM video', function(error, results, fields){
+    if (error) throw error;
+    
+    return res.send({error: false, data: results, message: 'All videos!'});    
+  });
+});
   
   app.get("/", (req, res) => {
   res.render("account")
@@ -82,7 +118,7 @@ app.get("/", (req, res) => {
   */
   let hashedPassword = await bcrypt.hash(password, 8)
   
-  con.query('INSERT INTO users SET?', {fullname: fullname, email: email, password: hashedPassword}, (err, res) => {
+  con.query('INSERT INTO customers SET?', {fullname: fullname, email: email, password: hashedPassword}, (err, res) => {
   if(error) {
   console.log(error)
   } else {
@@ -99,16 +135,6 @@ app.get("/", (req, res) => {
 // END customer registration
 
 // CRUD operations
-// SELECT 5 records
-con.connect(function(err) {
-  if (err) throw err;
-  var sql = "SELECT * FROM customers LIMIT 5";
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(result);
-  });
-  console.log("MySQL connected!")
-});
 
 // Display the 5 records
 app.get( "/", function(req,res) {
@@ -169,7 +195,7 @@ app.put('/', function(req, res){
       }
   ));
 
-  var sql = "UPDATE customers SET password = 'abcdef' WHERE id = '2'";
+  var sql = "UPDATE customers SET id = '2' WHERE email = 'tad@gmail.com'";
   var values = [
     ['test', 'test@gmail.com', , 'abcdef','abcdef']
   ];
@@ -196,7 +222,7 @@ app.delete('/', function(req, res){
       }
   ));
 
-  var sql = "DELETE FROM customers WHERE id = '2'";
+  var sql = "DELETE FROM customers WHERE name = 'test'";
   var values = [
     ['test', 'test@gmail.com', 'abcdef', 'abcdef']
   ];
