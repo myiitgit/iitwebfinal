@@ -38,7 +38,7 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <!-- START Server Progess Bar-->
-    <div aria-busy="true" aria-describedby="progress-bar">
+    <!--div aria-busy="true" aria-describedby="progress-bar"-->
     <!-- START m8l2-->
     <h1>Server processing data...</h1>
     <button id = "button" onClick = "FetchData()">FetchData</button>
@@ -54,18 +54,15 @@
             }).then((data) => {
                 console.log(data);
                 document.getElementById('id').innerHTML = data.id;
-                document.getElementById('name').innerHTML = data.firstname;
-                document.getElementById('password').innerHTML = data.lastname;
-                document.getElementById('password_confirm').innerHTML = data.email;
+                document.getElementById('name').innerHTML = data.name;
+                document.getElementById('email').innerHTML = data.email;
                 document.getElementById('password').innerHTML = data.password;
-                document.getElementById('address').innerHTML = data.address;
-                document.getElementById('datejoined').innerHTML = data.datejoined;
-                document.getElementById('lastlogin').innerHTML = data.lastlogin;
+                document.getElementById('password_confirm').innerHTML = data.password_confirm;
             })
         }
     </script>
     </div>
-    <progress id="progress-bar" aria-label="Content loading…"></progress>
+    <!--progress id="progress-bar" aria-label="Content loading…"></progress-->
     <!--END Server Progress Bar-->
     <!--END m8l2-->
   </body>
