@@ -9,14 +9,7 @@ app.set('view engine', 'hbs')
 
 // other imports
 const path = require("path")
-const publicDir = path.join(__dirname, './public')
-app.use(express.static(publicDir))
-
 const bcrypt = require("bcryptjs")
-
-// configure the Express.js server to receive the form values as JSON:
-app.use(express.urlencoded({extended: 'false'}))
-app.use(express.json())
 
 // Default DB Route
 app.get('/', function(req, res) {
@@ -31,10 +24,11 @@ var con = mysql.createConnection({
   database: "kvideodb"
 });
 
-con.connect();
-/*
+//con.connect();
+
 // Connect to DB and select 5 customers
 // SELECT 5 records
+
 con.connect(function(err) {
   if (err) throw err;
   var sql = "SELECT * FROM customers LIMIT 5";
@@ -44,7 +38,6 @@ con.connect(function(err) {
   });
   console.log("MySQL connected!")
 });
-*/
 
 // Retrive ALL customers
 app.get("/customers", function (req,res) {
@@ -66,76 +59,7 @@ app.get("/video", function (req,res) {
   });
 });
   
-  app.get("/", (req, res) => {
-  res.render("account")
-  })
-  
-  app.get("/auth/login", (req, res) => {
-  res.render("login")
-  })
-  
-  // START POST ACTION
-  // Create auth/register and retrieve the user’s form values
-  app.post("/auth/account", (req, res) => { 
-  const { name, email, password, password_confirm } = req.body
-  
-  // db.query() code goes here : retrieve the customer’s form values
-  /*
-  Now that you have the values query the database to check if the email is on the server. 
-  That way, a user cannot register multiple times with the same email
-  */
-  con.query('SELECT email FROM customers WHERE email = ?', [email], async (error, res) => {
-  // REPORT Query Error
-  /*
-  If there is an error while executing the query, access error 
-  and display it on the server’s terminal:
-  */
-  if(error){
-  console.log(error)
-  }
-  
-  // START Check customer email no already registered
-  
-  // CHECK Passwords match
-  /*
-  Next, check if there is a result and if the two passwords are a match. 
-  If any conditions are true, re-render the register page to notify the user 
-  the email is already in use or that the passwords don’t match:
-  */
-  if( res.length > 0 ) {
-  return res.render('account', {
-  message: 'This email is already in use'
-  })
-  } else if(password !== password_confirm) {
-  return res.render('account', {
-  message: 'Passwords do not match!'
-  })
-  }
-  // Check if there is a result and if the two passwords are a match. 
-  /*
-  If any conditions are true, re-render the register page to notify the user 
-  the email is already in use or that the passwords don’t match:
-  */
-  let hashedPassword = await bcrypt.hash(password, 8)
-  
-  con.query('INSERT INTO customers SET?', {fullname: fullname, email: email, password: hashedPassword}, (err, res) => {
-  if(error) {
-  console.log(error)
-  } else {
-  return res.render('account', {
-  message: 'User registered!'
-  })
-  }
-  })
-  })
-  })
-  
-  // END Check customer email no already registered
-  // END POST ACTION
-// END customer registration
-
 // CRUD operations
-
 // Display the 5 records
 app.get( "/", function(req,res) {
     res.setHeader("Access-Control-Origin-Allow","*");
